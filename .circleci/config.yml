@@ -1,0 +1,11 @@
+version: 2.0
+
+jobs:
+  build:
+    working_directory: ~/pr_status_action
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run: sudo pip install -r requirements-dev.txt
+      - run: pytest --cov=pr_status_action tests.py --cov-report term --cov-fail-under=100

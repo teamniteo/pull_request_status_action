@@ -1,0 +1,27 @@
+# Meta data for the Action.
+
+name: "Pull Request Status Action"
+author: "niteo.co"
+description: "A Github Action to create Pull Request Status."
+branding:
+  icon: "git-pull-request"
+  color: "blue"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+
+inputs:
+  pr_number:
+    description: Pull Request number.
+    required: true
+  state:
+    description: State to apply.
+    required: true
+  repository:
+    description: Name of the repository.
+    required: true
+  context:
+    description: Name to identify the Status.
+    required: false
+    default: default
