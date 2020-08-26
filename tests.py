@@ -70,13 +70,50 @@ def test_get_statuses_url_failure():
 @mock.patch.dict(os.environ, {"GITHUB_TOKEN": "secret"})
 def test_create_commit_status():
 
+    from pr_status_action import Args
+
+    args = Args(
+        repository="foo/bar",
+        pr_num=32,
+        context="default",
+        state=pr_status_action.States.pending,
+        target_url="https://foo.com",
+        description="Foo",
+    )
+
     responses.add(responses.POST, "https://api.github.com/statuses/123", status=200)
 
-    pr_status_action._create_commit_status(
-        "https://api.github.com/statuses/123",
-        pr_status_action.States.pending,
-        "review-app-test",
+    pr_status_action._create_commit_status("https://api.github.com/statuses/123", args)
+
+    assert len(responses.calls) == 1
+    assert (
+        responses.calls[0].request.headers["Accept"] == "application/vnd.github.v3+json"
     )
+    assert responses.calls[0].request.headers["Authorization"] == "token secret"
+    assert (
+        responses.calls[0].request.body
+        == '{"state": "pending", "context": "default", "target_url": "https://foo.com", "description": "Foo"}'
+    )
+
+
+@responses.activate
+@mock.patch.dict(os.environ, {"GITHUB_TOKEN": "secret"})
+def test_create_commit_status_with_target_url():
+
+    from pr_status_action import Args
+
+    responses.add(responses.POST, "https://api.github.com/statuses/123", status=200)
+
+    args = Args(
+        repository="foo/bar",
+        pr_num=32,
+        context="default",
+        state=pr_status_action.States.pending,
+        target_url="https://foo.com",
+        description=None,
+    )
+
+    pr_status_action._create_commit_status("https://api.github.com/statuses/123", args)
 
     assert len(responses.calls) == 1
     assert (
@@ -89,13 +126,22 @@ def test_create_commit_status():
 @mock.patch.dict(os.environ, {"GITHUB_TOKEN": "secret"})
 def test_create_commit_status_failure():
 
+    from pr_status_action import Args
+
     responses.add(responses.POST, "https://api.github.com/statuses/123", status=404)
+
+    args = Args(
+        repository="foo/bar",
+        pr_num=32,
+        context="default",
+        state=pr_status_action.States.pending,
+        target_url="https://foo.com",
+        description=None,
+    )
 
     with pytest.raises(exceptions.HTTPError) as excinfo:
         pr_status_action._create_commit_status(
-            "https://api.github.com/statuses/123",
-            pr_status_action.States.pending,
-            "review-app-test",
+            "https://api.github.com/statuses/123", args
         )
 
     assert "404 Client Error" in str(excinfo.value)
@@ -109,6 +155,8 @@ def test_create_commit_status_failure():
         "INPUT_PR_NUMBER": "123",
         "INPUT_CONTEXT": "default",
         "INPUT_STATE": "success",
+        "INPUT_TARGET_URL": "http://foo.bar",
+        "INPUT_DESCRIPTION": "Foo description",
     },
 )
 @responses.activate

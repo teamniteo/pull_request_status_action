@@ -30,6 +30,13 @@ jobs:
           # Defaults to `default`
           context: default
 
+          # The target URL to associate with the Status (Optional)
+          # This URL will be linked from the Github UI to allow users to easily see the source of the status.
+          target_utl: https://example.target_url.com
+
+          # A short description of the status (Optional)
+          description: "dober dan"
+
         env:
           # Default Github Token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -25,3 +25,9 @@ inputs:
     description: Name to identify the Status.
     required: false
     default: default
+  target_url:
+    description: The target URL to associate with this status.
+    required: false
+  description:
+    description: A short description of the status.
+    required: false
