@@ -29,6 +29,8 @@ class Args:
     pr_num: int
     context: str
     state: States
+    target_url: t.Optional[str]
+    description: t.Optional[str]
 
 
 def _headers() -> t.Dict[str, str]:
@@ -62,19 +64,25 @@ def _get_statuses_url(repository: str, pr_num: int) -> str:
     return response_json["statuses_url"]
 
 
-def _create_commit_status(statuses_url: str, state: States, context: str) -> None:
+def _create_commit_status(statuses_url: str, args: Args) -> None:
     """Update a commit status to mark PR state.
     
         Ref: https://docs.github.com/en/rest/reference/repos#create-a-commit-status
 
     Inputs:
         statuses_url: Statuses URL of the latest commit.
-        state: One of the states (error | failure | pending | success).
-        context: Name of the status.
+        args: User inputs.
     """
 
-    payload = json.dumps({"state": state.value, "context": context})
-    response = requests.post(statuses_url, headers=_headers(), data=payload)
+    payload = {"state": args.state.value, "context": args.context}
+
+    if args.target_url:
+        payload["target_url"] = args.target_url
+
+    if args.description:
+        payload["description"] = args.description
+
+    response = requests.post(statuses_url, headers=_headers(), data=json.dumps(payload))
     response.raise_for_status()
 
 
@@ -89,11 +97,12 @@ def main() -> None:
         pr_num=int(os.environ["INPUT_PR_NUMBER"]),
         context=os.environ["INPUT_CONTEXT"],
         state=States(os.environ["INPUT_STATE"]),
+        target_url=os.environ.get("INPUT_TARGET_URL"),
+        description=os.environ.get("INPUT_DESCRIPTION"),
     )
     statuses_url = _get_statuses_url(args.repository, args.pr_num)
 
-    _create_commit_status(statuses_url, args.state, args.context)
-
+    _create_commit_status(statuses_url, args)
 
     logger.info(
         f"Status of the #{args.pr_num} PR has been changed to {args.state.value} state."
