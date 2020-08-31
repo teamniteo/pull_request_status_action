@@ -32,10 +32,10 @@ jobs:
 
           # The target URL to associate with the Status (Optional)
           # This URL will be linked from the Github UI to allow users to easily see the source of the status.
-          target_utl: https://example.target_url.com
+          target_url: https://example.target_url.com
 
           # A short description of the status (Optional)
-          description: "dober dan"
+          description: "An example description"
 
         env:
           # Default Github Token
