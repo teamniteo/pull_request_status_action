@@ -1,6 +1,6 @@
 # Pull Request Status Action
 
-[![CircleCI](https://circleci.com/gh/niteoweb/pull_request_status_action/tree/master.svg?style=svg)](https://circleci.com/gh/niteoweb/pull_request_status_action)
+[![CircleCI](https://circleci.com/gh/teamniteo/pull_request_status_action/tree/master.svg?style=svg)](https://circleci.com/gh/teamniteo/pull_request_status_action)
 [![GitHub marketplace](https://img.shields.io/badge/marketplace-heroku--pull--request--status--action-blue?style=flat-square&logo=github)](https://github.com/marketplace/actions/pull-request-status-action)
 
 A Github Action that creates a `Status` for the Pull Request.
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set PR Status to pending
-        uses: niteoweb/pull_request_status_action@v1.0.0
+        uses: teamniteo/pull_request_status_action@v1.0.0
         with:
           # Pull Request number (Mandatory)
           pr_number: 32
@@ -24,7 +24,7 @@ jobs:
           state: pending
 
           # Name of the repository in {organization}/{repo_name} format (Mandatory)
-          repository: niteoweb/the-awesome-repo
+          repository: teamniteo/the-awesome-repo
 
           # Name to identify the Status (Optional)
           # Defaults to `default`
