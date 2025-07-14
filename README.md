@@ -62,3 +62,7 @@ jobs:
 ```
 
 - Make sure that coverage is 100%.
+
+## We're hiring!
+
+At Niteo we regularly contribute back to the Open Source community. If you do too, we'd like to invite you to [join our team](https://niteo.co/careers)!
